@@ -3,6 +3,8 @@ package springdemo.cc.controller;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import springdemo.cc.Service.IUserService;
+import springdemo.cc.model.Page;
 import springdemo.cc.model.User;
 
 @Controller
@@ -41,8 +44,35 @@ public class UserController {
 				+ userList.size());
 		mv.addObject("userList", userList);
 		String teststr = "test";
-		model.addAttribute("teststr",teststr);
+		model.addAttribute("teststr", teststr);
 		mv.setViewName("user/list");
+		return mv;
+	}
+
+	/**
+	 * 分页显示
+	 * 
+	 * @throws Exception
+	 * 
+	 * @serialData 0716
+	 */
+	@RequestMapping(value = "/pagelist", method = RequestMethod.GET)
+	public ModelAndView getUserlistForPages(HttpServletRequest request,
+			HttpServletResponse response) throws Exception {
+
+		ModelAndView mv = new ModelAndView();
+		String queryHql = "from users";
+		String countHql = "select count(*) from users";
+		Integer currentPage = null;
+		if(request.getParameter("currentPage")!=null)
+		 currentPage = Integer.parseInt(request.getParameter("currentPage"));
+		if (currentPage == null)
+			currentPage = 1;
+		int pageSize = 5;
+		Page<User> userPage = userService.showPage(queryHql, countHql, null,
+				currentPage, pageSize);
+		mv.addObject("userPage", userPage);
+		mv.setViewName("user/pagelist");
 		return mv;
 	}
 

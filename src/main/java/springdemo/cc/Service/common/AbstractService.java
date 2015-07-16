@@ -2,10 +2,12 @@ package springdemo.cc.Service.common;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.transaction.annotation.Transactional;
 
 import springdemo.cc.dao.common.IOperations;
+import springdemo.cc.model.Page;
 
 @Transactional
 public abstract class AbstractService<T extends Serializable> implements
@@ -40,5 +42,13 @@ public abstract class AbstractService<T extends Serializable> implements
 	@Override
 	public void deleteById(String entityId) {
 		getDao().deleteById(entityId);
+	}
+
+	@Override
+	public Page<T> showPage(String queryHql, String countHql,
+			Map<String, Object> paramMap, int currentPage, int pageSize)
+			throws Exception {
+		// TODO Auto-generated method stub
+		return getDao().showPage(queryHql, countHql, paramMap, currentPage, pageSize);
 	}
 }
